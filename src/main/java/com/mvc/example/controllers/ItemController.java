@@ -21,7 +21,7 @@ public class ItemController {
         this.itemRepository = itemRepository;
     }
 
-    @GetMapping(produces = APPLICATION_JSON_VALUE)
+    @GetMapping
     public Object getAll(
             @RequestParam(name = "format", required = false, defaultValue = "html") String format,
             Model model
