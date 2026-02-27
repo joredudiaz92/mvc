@@ -10,4 +10,8 @@ class ExampleApplicationTests {
 	void contextLoads() {
 	}
 
+	@Test
+	void mainMethodTest() {
+		ExampleApplication.main(new String[] {"--spring.profiles.active=test"});
+	}
 }
