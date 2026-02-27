@@ -1,0 +1,26 @@
+name: build & test
+on:
+  push:
+    branches:
+      - main
+jobs:
+  build:
+    runs-on:
+      ubuntu-latest
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v6
+      - name: build
+        uses: spring-io/spring-gradle-build-action@v2
+        with:
+          java-version: 25
+      - name: Run Coverage
+        run: |
+          chmod +x gradlew
+          ./gradlew test
+      - name: Check coverage
+        uses: madrapps/jacoco-report@v1.7.2
+        with:
+          paths: ${{ github.workspace }}/build/reports/jacoco/test/jacocoTestReport.xml
+          min-coverage-overall: 80
+          token: ''
