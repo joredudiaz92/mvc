@@ -3,6 +3,7 @@ plugins {
 	id 'org.springframework.boot' version '4.0.2'
 	id 'io.spring.dependency-management' version '1.1.7'
 	id 'jacoco'
+	id 'checkstyle'
 }
 
 group = 'com.mvc'
@@ -35,7 +36,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	runtimeOnly 'com.h2database:h2'
-
+	checkstyle 'com.puppycrawl.tools:checkstyle:13.2.0'
 }
 
 tasks.named('test') {
@@ -44,7 +45,6 @@ tasks.named('test') {
 
 jacoco {
 	toolVersion = '0.8.14'
-	//reportsDirectory = layout.buildDirectory.dir("customJacocoReportDir")
 }
 
 test {
@@ -57,4 +57,13 @@ jacocoTestReport {
 		html.required = true
 	}
 	dependsOn test
+}
+
+checkstyle {
+	// Versión del motor Checkstyle compatible con Java 25
+	toolVersion = '13.2.0'
+
+	// Opcional: ignorar fallos para que la compilación no se detenga
+	ignoreFailures = false
+	configFile = rootProject.file('config/checkstyle/checkstyle.xml')
 }

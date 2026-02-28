@@ -1,6 +1,7 @@
 name: build & test
 on:
-  push:
+  pull_request:
+    types: [opened, synchronize, reopened]
     branches:
       - main
 jobs:
@@ -26,8 +27,15 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           min-coverage-overall: 80
       - name: Fail if overall coverage is less than 80%
-        if: ${{ steps.JaCoCo.outputs.coverage-overall > 80.0 }}
+        if: ${{ steps.JaCoCo.outputs.coverage-overall < 80.0 }}
         uses: actions/github-script@v6
         with:
           script: |
             core.setFailed('Overall coverage is less than 80%!')
+      - name: Check formatter
+        uses: dbelyaev/action-checkstyle@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          reporter: github-pr-review
+          checkstyle_config: ${{ github.workspace }}/config/checkstyle/checkstyle.xml
+          fail_level: error
