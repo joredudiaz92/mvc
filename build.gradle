@@ -60,10 +60,8 @@ jacocoTestReport {
 }
 
 checkstyle {
-	// Versión del motor Checkstyle compatible con Java 25
 	toolVersion = '13.2.0'
 
-	// Opcional: ignorar fallos para que la compilación no se detenga
 	ignoreFailures = false
 	configFile = rootProject.file('config/checkstyle/checkstyle.xml')
 }
