@@ -26,3 +26,14 @@ jobs:
           context: .
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/mvc:latest
+      - name: Generate a random tag
+        id: generate_string
+        run: |
+          # Use date and a random value to create a somewhat unique string
+          random_string=$(date +%s%N | sha256sum | head -c 32)
+          echo "RANDOM_STRING=$random_string" >> $GITHUB_OUTPUT
+        shell: bash
+      - name: Create Tag
+        uses: rickstaa/action-create-tag@v1
+        with:
+          tag: ${{ steps.generate_string.outputs.RANDOM_STRING }}
