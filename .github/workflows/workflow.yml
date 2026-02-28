@@ -19,8 +19,15 @@ jobs:
           chmod +x gradlew
           ./gradlew test
       - name: Check coverage
+        id: JaCoCo
         uses: madrapps/jacoco-report@v1.7.2
         with:
           paths: ${{ github.workspace }}/build/reports/jacoco/test/jacocoTestReport.xml
           token: ${{ secrets.GITHUB_TOKEN }}
           min-coverage-overall: 80
+      - name: Fail if overall coverage is less than 80%
+        if: ${{ steps.JaCoCo.outputs.coverage-overall > 80.0 }}
+        uses: actions/github-script@v6
+        with:
+          script: |
+            core.setFailed('Overall coverage is less than 80%!')
