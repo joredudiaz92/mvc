@@ -28,7 +28,7 @@ jobs:
       - name: Make Gradle Wrapper executable
         run: chmod +x ./gradlew # Ensures the script has execute permissions
       - name: Create tag
-        run: ./gradlew semver -x test -x check --patch
+        run: ./gradlew semver -x test -x check --patch --stacktrace
       - name: Get tag
         id: generate_string
         run: |
