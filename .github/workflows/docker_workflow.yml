@@ -23,9 +23,9 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3 # Official action for caching and configuration
       - name: Make Gradle Wrapper executable
-        run: chmod +x ./gradle # Ensures the script has execute permissions
+        run: chmod +x ./gradlew # Ensures the script has execute permissions
       - name: Create tag
-        run: ./gradle semver -x test -x check --patch
+        run: ./gradlew semver -x test -x check --patch
       - name: Get tag
         id: generate_string
         run: |
