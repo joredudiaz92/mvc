@@ -20,20 +20,21 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3 # Official action for caching and configuration
+      - name: Make Gradle Wrapper executable
+        run: chmod +x ./gradle # Ensures the script has execute permissions
+      - name: Create tag
+        run: ./gradle semver -x test -x check --patch
+      - name: Get tag
+        id: generate_string
+        run: |
+          tag=$(cat gradle.properties  | grep "version" | cut -d "=" -f 2)
+          echo "TAG=tag" >> $GITHUB_OUTPUT
+        shell: bash
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
           context: .
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/mvc:latest
-      - name: Generate a random tag
-        id: generate_string
-        run: |
-          # Use date and a random value to create a somewhat unique string
-          random_string=$(date +%s%N | sha256sum | head -c 32)
-          echo "RANDOM_STRING=$random_string" >> $GITHUB_OUTPUT
-        shell: bash
-      - name: Create Tag
-        uses: rickstaa/action-create-tag@v1
-        with:
-          tag: ${{ steps.generate_string.outputs.RANDOM_STRING }}
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/mvc:${{ steps.generate_string.outputs.TAG }}
