@@ -48,10 +48,8 @@ jobs:
           
           git push origin main
           git push origin --tags
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Get tag
         id: generate_tag
         run: |
