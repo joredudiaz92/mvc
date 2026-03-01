@@ -40,7 +40,7 @@ jobs:
         id: generate_tag
         run: |
           tag=$(cat gradle.properties  | grep "version" | cut -d "=" -f 2)
-          echo "TAG=tag" >> $GITHUB_OUTPUT
+          echo "TAG=$tag" >> $GITHUB_OUTPUT
         shell: bash
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
