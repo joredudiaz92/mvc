@@ -48,6 +48,9 @@ jobs:
             -Psemver.git.commit=true \
             -Psemver.git.push.branch=true \
             -x test -x check
+          
+          git push origin main
+          git push origin main --tags
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Get tag
