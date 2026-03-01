@@ -21,10 +21,16 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: build
-        uses: spring-io/spring-gradle-build-action@v2
+#      - name: build
+#        uses: spring-io/spring-gradle-build-action@v2
+#        with:
+#          java-version: 25
+      - name: Set up JDK 25
+        uses: actions/setup-java@v4
         with:
-          java-version: 25
+          java-version: '25'         # Especifica la versión 25
+          distribution: 'temurin'    # Temurin (Adoptium) ya ofrece binarios de Java 25
+          cache: 'gradle'
       - name: Create tag
         run: |
           chmod +x gradlew
