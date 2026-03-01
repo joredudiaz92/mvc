@@ -35,7 +35,6 @@ jobs:
         run: |
           git clean -fd
           git checkout .
-          chmod +x gradlew
           ./gradlew semver -x test -x check --patch --stacktrace --scan
       - name: Get tag
         id: generate_tag
