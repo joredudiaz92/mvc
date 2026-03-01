@@ -13,6 +13,8 @@ jobs:
   build_and_push:
     #if: ${{ github.event.pull_request.merged == true }}
     runs-on: ubuntu-latest
+    permissions:
+      contents: write  # OBLIGATORIO para hacer push
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -31,14 +33,12 @@ jobs:
           java-version: '25'         # Especifica la versión 25
           distribution: 'temurin'    # Temurin (Adoptium) ya ofrece binarios de Java 25
           cache: 'gradle'
-      - name: Configure Git User
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
       - name: Create tag
         run: |
           git clean -fd
           git checkout .
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
           ./gradlew semver -Psemver.git.commit=true -Psemver.git.push.branch=true -x test -x check --patch
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
