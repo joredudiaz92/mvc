@@ -31,11 +31,17 @@ jobs:
           java-version: '25'         # Especifica la versión 25
           distribution: 'temurin'    # Temurin (Adoptium) ya ofrece binarios de Java 25
           cache: 'gradle'
+      - name: Configure Git User
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
       - name: Create tag
         run: |
           git clean -fd
           git checkout .
           ./gradlew semver -x test -x check --patch --stacktrace --scan
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Get tag
         id: generate_tag
         run: |
