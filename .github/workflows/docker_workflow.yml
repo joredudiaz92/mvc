@@ -39,7 +39,7 @@ jobs:
         run: |
           git clean -fd
           git checkout .
-          ./gradlew semver -x test -x check -Psemver.git.commit=true -Psemver.git.push.branch=true --patch
+          ./gradlew semver -Psemver.git.commit=true -Psemver.git.push.branch=true -x test -x check --patch
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Get tag
