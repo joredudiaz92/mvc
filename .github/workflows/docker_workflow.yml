@@ -40,6 +40,9 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           ./gradlew semver -Psemver.git.commit=true -Psemver.git.push.branch=true -x test -x check --patch
+          git add -A
+          git commit -m "new version"
+          git push origin main
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Get tag
