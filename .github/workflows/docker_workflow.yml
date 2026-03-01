@@ -39,10 +39,15 @@ jobs:
           git checkout .
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          ./gradlew semver -Psemver.git.commit=true -Psemver.git.push.branch=true -x test -x check --patch
-          git add -A
-          git commit -m "new version"
-          git push origin main
+          
+          # Eliminamos --patch (no existe) y usamos -Psemver.scope=patch
+          # El plugin hará el commit y el push por ti
+          ./gradlew semver \
+            -Psemver.scope=patch \
+            -Psemver.stage=final \
+            -Psemver.git.commit=true \
+            -Psemver.git.push.branch=true \
+            -x test -x check
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Get tag
