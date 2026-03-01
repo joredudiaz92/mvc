@@ -45,10 +45,11 @@ jobs:
           ./gradlew semver \
             -Psemver.scope=patch \
             -Psemver.stage=final \
-            -Psemver.git.commit=true \
-            -Psemver.git.push.branch=true \
+            -Psemver.git.commit=false \
+            -Psemver.git.push.branch=false \
             -x test -x check
-          
+          git add -A
+          git commit -m "new version"
           git push origin main
           git push origin main --tags
         env:
