@@ -38,7 +38,7 @@ jobs:
           cache: 'gradle'
       - name: Create tag
         run: |
-          yq -i '.image.tag = "1.1.3"' ${{ github.workspace }}/helm/values.yaml 
+          yq -i '.image.tag = "1.1.3"' ${{ github.workspace }}/helm/example/values.yaml 
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           
