@@ -48,5 +48,4 @@ INSERT INTO Items (id, name) VALUES
 (47, 'Manta Pesada Gravity Blanket Original'),
 (48, 'Difusor de Aceites Esenciales Vitruvi Stone'),
 (49, 'Vela Aromática Diptyque Baies'),
-(50, 'Planta de Interior Monstera Deliciosa'),
-(51, 'Planta de Interior Monstera Carnosa');
+(50, 'Planta de Interior Monstera Deliciosa');
