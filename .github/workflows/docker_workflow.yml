@@ -36,25 +36,30 @@ jobs:
           java-version: '25'
           distribution: 'temurin'
           cache: 'gradle'
-      - name: Create tag
+      - name: Config git
         run: |
-          yq -i '.image.tag = "1.1.3"' ${{ github.workspace }}/helm/example/values.yaml 
-          cat ${{ github.workspace }}/helm/example/values.yaml
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          
+      - name: Create tag
+        run: |
           ./gradlew semver -x test -x check --patch
-          
-          git push origin main
-          git push origin --tags
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Get tag
+      - name: Get tag version
         id: generate_tag
         run: |
           tag=$(cat gradle.properties  | grep "version" | cut -d "=" -f 2)
           echo "TAG=$tag" >> $GITHUB_OUTPUT
         shell: bash
+      - name: Set new tag version to HELM files
+        run: |
+          yq -i '.image.tag = "${{ steps.generate_tag.outputs.TAG }}"' ${{ github.workspace }}/helm/example/values.yaml 
+          
+          git add .
+          git commit -m "Change version in HELM files to ${{ steps.generate_tag.outputs.TAG }}"
+          
+          git push origin main
+          git push origin --tags
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       - name: Build and push Docker image
