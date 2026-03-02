@@ -53,6 +53,7 @@ jobs:
         run: |
           yq -i '.image.tag = "${{ steps.generate_tag.outputs.TAG }}"' ${{ github.workspace }}/helm/example/values.yaml
           yq -i '.version = "${{ steps.generate_tag.outputs.TAG }}"' ${{ github.workspace }}/helm/example/Chart.yaml
+          yq -i '.appVersion = "\"${{ steps.generate_tag.outputs.TAG }}\""' ${{ github.workspace }}/helm/example/Chart.yaml
           
           git add .
           git commit -m "Change version in HELM files to ${{ steps.generate_tag.outputs.TAG }}"
