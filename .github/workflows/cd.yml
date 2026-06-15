@@ -3,7 +3,7 @@ name: build & push Docker image
 on:
   pull_request:
     branches:
-      - main
+      - master
     types: [ closed ]
 
 permissions:
@@ -55,7 +55,7 @@ jobs:
           git add .
           git commit -m "Change version in HELM files to ${{ steps.generate_tag.outputs.TAG }}"
           
-          git push origin main
+          git push origin master
           git push origin --tags
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
