@@ -64,6 +64,8 @@ Se integró SonarCloud para realizar análisis estático continuo del código fu
 **Evidencia SonarCloud:**
 
 ![Sonar](screenshots/sonar/sonar.png)
+
+![Sonar](screenshots/sonar/sonar2.png)
 ---
 
 
