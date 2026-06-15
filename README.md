@@ -56,4 +56,30 @@ El controlador está configurado para alternar entre tipos de vista mediante un 
 *   `src/main/resources/templates/productos.html`: Plantilla minimalista con Bootstrap.
 
 ---
+
+
+
+## Análisis de Vulnerabilidades con Snyk
+
+Se configuró la herramienta Snyk en el pipeline para analizar continuamente las dependencias del proyecto (`build.gradle`) en busca de vulnerabilidades de seguridad conocidas.
+
+Durante la primera ejecución, **Snyk detectó múltiples vulnerabilidades de severidad Alta y Crítica** asociadas principalmente a componentes de Spring, lo cual detuvo intencionalmente la ejecución del pipeline.
+
+**Evidencia de las vulnerabilidades detectadas:**
+
+![Vulnerabilidades detectadas por Snyk](screenshots/snyk/snyk_error.png)
+![Vulnerabilidades detectadas por Snyk](screenshots/snyk/snyk_error1.png)
+
+### Solución aplicada
+
+Para solventar estos riesgos de seguridad de manera óptima, **se actualizó la versión global del framework Spring Boot** en el archivo `build.gradle`, subiendo de la versión `4.0.2` a la versión `4.0.7`. Al realizar esta actualización, el framework trajo automáticamente las versiones parchadas y seguras de todas sus sub-dependencias.
+
+**Evidencia del escaneo limpio tras la actualización:**
+
+![Snyk limpio tras actualización](screenshots/snyk/snyk_ok1.png)
+
+
+![Snyk limpio tras actualización](screenshots/snyk/snyk_ok.png)
+
+---
 Creado para fines educativos sobre el patrón MVC en entornos Java modernos.
