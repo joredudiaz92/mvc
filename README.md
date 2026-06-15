@@ -61,7 +61,7 @@ El controlador está configurado para alternar entre tipos de vista mediante un 
 
 Se integró SonarCloud para realizar análisis estático continuo del código fuente. Esto nos permite asegurar la calidad del código, mantener buenas prácticas y detectar code smells, bugs o problemas antes de integrar el código.
 
-**Evidencia del análisis de SonarCloud:**
+**Evidencia SonarCloud:**
 
 
 ---
