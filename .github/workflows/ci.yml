@@ -55,8 +55,8 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           args: >
-            -Dsonar.projectKey="${{ secrets.SONAR_PROJECT_KEY }}"
-            -Dsonar.organization="${{ secrets.SONAR_ORGANIZATION }}"
+            -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
+            -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }}
             -Dsonar.host.url=https://sonarcloud.io
             -Dsonar.java.binaries=build/classes
       - name: Setup Snyk CLI
