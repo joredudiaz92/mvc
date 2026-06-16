@@ -57,6 +57,77 @@ El controlador está configurado para alternar entre tipos de vista mediante un 
 
 ---
 
+## Justificación de las Herramientas Utilizadas
+
+| Herramienta | Rol en la Arquitectura | Propósito y Beneficio Clave |
+| :--- | :--- | :--- |
+| **Docker** | Contenedores | Proporciona un entorno estandarizado para aislar la aplicación de la infraestructura subyacente. |
+| **Minikube** | Clúster Local | Actúa como el entorno de pruebas local ideal para simular un clúster de Kubernetes real, validando configuraciones de orquestación antes de ir a producción. |
+| **ArgoCD** | GitOps | Automatiza los despliegues sincronizando el estado del clúster de Kubernetes con los manifiestos del repositorio de Git, eliminando intervenciones manuales y reduciendo errores humanos. |
+| **JMeter** | Pruebas de Carga | Valida la resiliencia del sistema generando cargas masivas de tráfico simétrico para someterlo a condiciones extremas de estrés y detectar cuellos de botella. |
+| **Prometheus** | Monitoreo | Centraliza la observabilidad recolectando en tiempo real las métricas de rendimiento y salud del clúster. |
+| **Grafana** | Visualización | Transforma las métricas recolectadas por Prometheus en páneles visuales e interpretables para una toma de decisiones informada. |
+| **Helm** | Gestor de Paquetes | Simplifica la gestión de empaquetado, permitiendo desplegar y versionar arquitecturas complejas de Kubernetes (como la pila de Prometheus y Grafana) mediante plantillas reutilizables. |
+
+### A. Evidencia de Seguridad y Monitoreo
+* **Seguridad:** Se garantiza mediante el aislamiento perimetral en Docker y Kubernetes, limitando estrictamente el radio de exposición de los servicios.
+* **Monitoreo y Resiliencia:** Se validó mediante una prueba de estrés de **200,000 peticiones en 10 minutos** ejecutada con JMeter. El panel de Grafana registró simultáneamente el comportamiento del consumo de memoria RAM y CPU, sirviendo como evidencia de que el sistema puede autorregularse, escalar y mantener la disponibilidad bajo cargas masivas.
+
+### B. Reflexión sobre Eficiencia Operativa
+La combinación de una tubería CI/CD automatizada con despliegues basados en GitOps (ArgoCD) optimiza drásticamente el **Time-to-Market**. Los desarrolladores solo deben enviar (`push`) código al repositorio; las herramientas se encargan de validar, empaquetar y desplegar de forma transparente. Esto:
+* Reduce los tiempos muertos operativos.
+* Permite recuperaciones instantáneas ante fallos (*rollbacks*).
+* Libera al equipo de ingeniería de tareas manuales repetitivas.
+
+---
+
+## Análisis Detallado de los Workflows (`.github/workflows`)
+
+Basado en las convenciones estándar de automatización para proyectos Java modernos con Spring Boot y contenedores, este es el desglose técnico de los procesos:
+
+### Tubería 1: Integración Continua (`ci.yml`)
+
+```mermaid
+graph LR
+    A[Pull Request a main] --> B[Checkstyle Formato]
+    B --> C[Gradle Test & Cobertura]
+    C --> D{Estado: Aprobado/Rechazado}
+```
+
+* **¿Qué hace?** Valida la calidad, formato y lógica del código fuente de manera automática cada vez que un desarrollador propone cambios a la rama principal.
+* **¿Cómo lo hace?** 
+  1. Se activa únicamente ante eventos de *Pull Request* dirigidos a la rama `main`.
+  2. Descarga el código del repositorio e instala el entorno de ejecución (Java 17 o superior).
+  3. Ejecuta herramientas de análisis estático como **Checkstyle** para validar el cumplimiento de las reglas de formato de código.
+  4. Lanza los tests unitarios e integrados mediante Gradle (`./gradlew test`) y genera un reporte de cobertura de código.
+* **¿Por qué se hace?** Para garantizar la estabilidad de la rama principal. Actúa como una aduana automatizada que impide la mezcla (*merge*) de código roto, mal formateado o que no cumpla con los estándares mínimos de pruebas.
+
+### Tubería 2: Despliegue Continuo (`cd.yml`)
+
+```mermaid
+graph LR
+    A[Merge a main] --> B[Compilación Gradle]
+    B --> C[Construcción Imagen Docker]
+    C --> D[Versionamiento]
+    D --> E[Push a Docker Hub]
+```
+
+* **¿Qué hace?** Automatiza la construcción del artefacto final de software y su empaquetado en un contenedor listo para ser desplegado en el clúster.
+* **¿Cómo lo hace?**
+  1. Se activa de forma automática inmediatamente después de que un cambio es mezclado (*push/merge*) en la rama `main`.
+  2. Compila el proyecto Java y genera el archivo ejecutable (`.jar`) limpio de errores.
+  3. Utiliza el archivo `Dockerfile` de la raíz para construir la imagen del contenedor.
+  4. Genera de forma dinámica un número de versión único (basado en el ID del commit de Git o un incremento secuencial).
+  5. Realiza la autenticación segura en Docker Hub e inyecta la imagen empaquetada en el repositorio público: `joredudiaz92/mvc`.
+* **¿Por qué se hace?** Para eliminar el desfase entre el código terminado y el software desplegable. Al publicar la imagen de manera inmediata, se genera el disparador necesario para que **ArgoCD** detecte la actualización y refresque el clúster de Kubernetes en Minikube de forma transparente.
+
+---
+
+## 📦 Recursos del Repositorio
+
+* **Evidencias visuales:** Capturas de pantalla del correcto funcionamiento de todas las herramientas y de las métricas en los paneles de Grafana + Prometheus se encuentran en la carpeta [`/screenshots`](./screenshots).
+* **Pruebas de carga:** El archivo de configuración de JMeter (`.jmx`) utilizado para realizar las pruebas de estrés está disponible en la carpeta [`/jmeter`](./jmeter).
+
 ## Análisis Estático con SonarQube (SonarCloud)
 
 Se integró SonarCloud para realizar análisis estático continuo del código fuente. Esto nos permite asegurar la calidad del código, mantener buenas prácticas y detectar code smells, bugs o problemas antes de integrar el código.
